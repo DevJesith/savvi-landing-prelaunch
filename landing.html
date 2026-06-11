@@ -82,7 +82,7 @@
 
     <main>
       <!-- SECCION PRINCIPAL DE FEATURES -->
-      <section class="w-full bg-[#FAF9F6] px-6 py-16 md:px-16 flex flex-col items-center">
+      <section class="w-full bg-orange-200 px-6 py-16 md:px-16 flex flex-col items-center">
         <!-- 1. Encabezado (Titulo y Subtitulo) -->
         <div class="text-center max-w-2xl mb-12">
           <h2
@@ -179,10 +179,7 @@
           <div class="bg-[#E5E5E5] p-8 rounded-[2rem] flex flex-col justify-between md:col-span-1">
             <div>
               <div class="w-16 h-16 bg-[#FFD4CC] rounded-xl flex items-center justify-center mb-6">
-                <img
-                  src="/assets/Icon_metas.svg"
-                  class="w-8 h-8"
-                  alt="Icono Registro Manual" />
+                <img src="/assets/Icon_metas.svg" class="w-8 h-8" alt="Icono Registro Manual" />
               </div>
               <h3 class="text-2xl font-bold text-gray-900 mb-3">Metas de Ahorro</h3>
               <p class="text-gray-600">
@@ -207,10 +204,7 @@
             class="bg-white p-8 rounded-[2rem] border border-gray-100 shadow-sm flex flex-col md:flex-row justify-between items-center md:col-span-2 gap-6">
             <div class="flex-1">
               <div class="w-16 h-16 bg-[#FFD4CC] rounded-xl flex items-center justify-center mb-6">
-                <img
-                  src="/assets/Icon_reporte.svg"
-                  class="w-8 h-8"
-                  alt="Icono Registro Manual" />
+                <img src="/assets/Icon_reporte.svg" class="w-8 h-8" alt="Icono Registro Manual" />
               </div>
               <h3 class="text-2xl font-bold text-gray-900 mb-3">Reportes Profesionales</h3>
               <p class="text-gray-500">
@@ -221,9 +215,53 @@
             <!-- Boton de descarga grande narajna a la drecha -->
             <div
               class="w-24 h-24 bg-[#FF5A36] rounded-3xl flex items-center justify-center rotate-6">
-              <img src="/assets/Icon_descarga.svg" alt="">
+              <img src="/assets/Icon_descarga.svg" alt="" />
             </div>
           </div>
+        </div>
+      </section>
+
+      <!-- Form -->
+      <section class="py-32 px-8 max-w-5xl mx-auto text-center">
+        <div
+          class="bg-[#f0eded] p-12 md:p-20 rounded-3xl space-y-8 relative overflow-hidden border border-[#e6bdb5]/10 shadow-xl">
+          <!-- Glow decorativo -->
+          <div
+            class="absolute top-0 right-0 w-80 h-80 bg-[#FF4929]/10 rounded-full -translate-y-1/2 translate-x-1/2 blur-3xl"></div>
+
+          <!-- Título -->
+          <h2 class="text-4xl md:text-5xl font-extrabold tracking-tighter text-[#1b1c1c]">
+            ¿Listo para transformar tu futuro con Savvi?
+          </h2>
+
+          <!-- Texto descriptivo -->
+          <p class="text-lg text-[#5c403a] max-w-xl mx-auto">
+            Únete a más de 12,000 personas que ya están en la lista de espera para la revolución de
+            la gestión financiera personal consciente.
+          </p>
+
+          <!-- Formulario -->
+          <form
+            class="mt-10 flex flex-col sm:flex-col gap-4 w-full max-w-lg mx-auto justify-center items-center">
+            <!-- Input correo -->
+            <input
+              type="email"
+              placeholder="hola@ejemplo.com"
+              class="w-full px-8 py-4 rounded-full bg-[#ffffff] border border-[#e6bdb5]/20 text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#FF4929]/20" />
+
+            <!-- Input nombre -->
+            <input
+              type="text"
+              placeholder="nombre"
+              class="w-full px-8 py-4 rounded-full bg-[#ffffff] border border-[#e6bdb5]/20 text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#FF4929]/20" />
+
+            <!-- Botón -->
+            <button
+              type="submit"
+              class="px-10 py-4 rounded-full bg-[#FF4929] text-white font-bold hover:scale-105 active:scale-95 transition-all shadow-lg shadow-[#FF4929]/25">
+              Unirme ahora
+            </button>
+          </form>
         </div>
       </section>
     </main>
