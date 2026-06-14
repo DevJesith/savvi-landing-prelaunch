@@ -1,0 +1,663 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Savvi — Tu compañero financiero</title>
+    <!--
+      Tailwind (CDN): rápido para prototipado. En producción
+      considera compilar estilos para mejor rendimiento.
+    -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!--
+      Supabase JS client (CDN). Se necesita en la página para crear
+      el cliente en `custom_send.js`. Esta librería expone `supabase`
+      en `window` y permite comunicarse con la base de datos.
+      En producción, evita exponer claves sensibles en el cliente.
+    -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+      html {
+        scroll-behavior: smooth;
+      }
+      .typewriter-title {
+        position: relative;
+        line-height: 1.05;
+      }
+      .typewriter-cursor {
+        display: inline-block;
+        width: 1px;
+        height: 1.1em;
+        background: #1a1a1a;
+        margin-left: 0.25rem;
+        animation: blink-caret 1s steps(2, start) infinite;
+        vertical-align: bottom;
+      }
+      .typewriter-title.finished .typewriter-cursor {
+        display: none;
+      }
+      .animate-on-scroll {
+        opacity: 0;
+        transform: translateY(24px);
+        transition:
+          opacity 0.8s ease-out,
+          transform 0.8s ease-out;
+      }
+      .animate-on-scroll.visible {
+        opacity: 1;
+        transform: translateY(0);
+      }
+      .delay-100 {
+        transition-delay: 0.1s;
+      }
+      .delay-150 {
+        transition-delay: 0.15s;
+      }
+      .delay-200 {
+        transition-delay: 0.2s;
+      }
+      .delay-250 {
+        transition-delay: 0.25s;
+      }
+      .delay-300 {
+        transition-delay: 0.3s;
+      }
+      .delay-350 {
+        transition-delay: 0.35s;
+      }
+      nav a.nav-link {
+        transition:
+          color 0.2s ease,
+          border-color 0.2s ease;
+      }
+      nav a.nav-link.active {
+        color: #ff5a36;
+        border-bottom: 2px solid #ff5a36;
+        padding-bottom: 0.25rem;
+      }
+      .input-invalid {
+        border-color: #dc2626 !important;
+      }
+      .error-text {
+        color: #dc2626;
+      }
+      .success-text {
+        color: #16a34a;
+      }
+      section[id],
+      h2 {
+        scroll-margin-top: 6.5rem;
+      }
+      @keyframes blink-caret {
+        50% {
+          opacity: 0;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <!--
+        Barra de navegación fija en la parte superior.
+        Contiene: logo (izquierda), enlaces de sección (centro en escritorio)
+        y el botón principal (Lista de espera) a la derecha.
+        Las clases de Tailwind controlan el comportamiento responsive.
+      -->
+      <nav
+        class="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-4 md:px-6 py-3 md:py-4 bg-white shadow flex-wrap md:flex-nowrap gap-4 md:gap-0">
+        <!-- Logo -->
+        <div class="flex items-center gap-2 md:gap-3 flex-shrink-0">
+          <img class="w-12 md:w-16 h-12 md:h-16" src="/assets/Logo_Savvi.svg" />
+          <span class="font-bold text-xl md:text-3xl">Savvi</span>
+        </div>
+
+        <!-- Navegacion -->
+        <div
+          class="hidden md:flex items-center space-x-4 lg:space-x-8 text-sm md:text-lg font-medium">
+          <a
+            href="#plataforma"
+            class="nav-link text-gray-800 hover:text-orange-600 hover:border-b-2 border-orange-600 pb-1">
+            Plataforma
+          </a>
+          <a
+            href="#features"
+            class="nav-link text-gray-800 hover:text-orange-600 hover:border-b-2 hover:border-orange-600 pb-1">
+            Funciones
+          </a>
+          <a
+            href="#Roadmap"
+            class="nav-link text-gray-800 hover:text-orange-600 hover:border-b-2 hover:border-orange-600 pb-1">
+            Roadmap
+          </a>
+        </div>
+
+        <!-- Boton de espera -->
+        <button
+          class="bg-[#FF4929] hover:bg-[#e0401f] text-white font-semibold px-4 md:px-6 py-2 md:py-3 text-sm md:text-base rounded-full flex-shrink-0"
+          onclick="document.getElementById('Waitlist').scrollIntoView({ behavior: 'smooth' })">
+          Lista de espera
+        </button>
+      </nav>
+
+      <!--
+        Sección principal (`#plataforma`).
+        - `pt-24` compensa la altura del nav fijo.
+        - Contiene el título con efecto "typewriter" (texto dividido en
+          `#title-prefix`, `#title-highlight`, `#title-suffix`).
+      -->
+      <section
+        id="plataforma"
+        class="min-h-screen w-full pt-24 px-4 md:px-8 lg:px-16 py-12 md:py-16 flex items-center justify-center">
+        <div class="max-w-7xl w-full flex flex-col md:flex-row items-center gap-8 md:gap-8">
+          <div
+            class="w-full md:w-1/2 flex flex-col justify-center space-y-4 md:space-y-6 text-left">
+            <span
+              class="text-sm md:text-base uppercase tracking-[0.3em] text-[#FF5A36] font-semibold">
+              Plataforma Savvi
+            </span>
+            <!--
+              Título principal con animación tipo máquina de escribir.
+              - `#title-prefix`: primera parte (se escribe primero)
+              - `#title-highlight`: texto resaltado (se escribe segundo)
+              - `#title-suffix`: parte final y cursor
+            -->
+            <h1
+              class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-[#1A1A1A] leading-tight typewriter-title">
+              <span id="title-prefix">Toma el</span>
+              <span id="title-highlight" class="text-[#FF5A36]"></span>
+              <span id="title-suffix">
+                de tus finanzas
+                <span id="title-cursor" class="typewriter-cursor" aria-hidden="true"></span>
+              </span>
+            </h1>
+
+            <p class="text-lg text-gray-600 max-w-lg">
+              Experimenta la gestión de riqueza con minimalismo inteligente. Savvi elimina las
+              fricciones para que seas el arquitecto de tu propio crecimiento.
+            </p>
+
+            <div class="mt-4">
+              <a
+                href="#Waitlist"
+                class="inline-flex items-center justify-center bg-[#FF5A36] text-white font-semibold px-8 py-4 rounded-full hover:bg-[#e0401f] transition-colors shadow-lg shadow-[#FF5A36]/25">
+                Unirme a la lista de espera 🚀
+              </a>
+            </div>
+          </div>
+
+          <!--
+            Mockup / ilustración del producto a la derecha en desktop.
+            Está envuelto en `.animate-on-scroll` para aparecer con
+            una transición al hacer scroll.
+          -->
+          <div class="w-full md:w-1/2 flex justify-center items-center">
+            <div
+              class="animate-on-scroll delay-100 bg-gray-300 p-8 rounded-[2rem] shadow-xl border border-gray-100 max-w-md md:max-w-full flex justify-center items-center">
+              <img
+                src="/assets/project-c39cc9c2-e2d1-414f-8b6a-ebccb31ad8f2 (1).png"
+                alt="Savvi App Mockup"
+                class="w-full h-auto rounded-xl" />
+            </div>
+          </div>
+        </div>
+      </section>
+    </header>
+
+    <main>
+      <!--
+        SECCIÓN: FEATURES
+        Contiene el encabezado y un grid con tarjetas que describen
+        las funcionalidades principales. Cada tarjeta usa
+        `.animate-on-scroll` para animar su entrada.
+      -->
+      <!-- SECCION PRINCIPAL DE FEATURES -->
+      <section
+        id="features"
+        class="w-full px-4 md:px-8 lg:px-16 py-12 md:py-16 flex flex-col items-center">
+        <!-- 1. Encabezado (Titulo y Subtitulo) -->
+        <div class="text-center max-w-2xl mb-8 md:mb-12">
+          <h2
+            class="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-black text-[#1A1A1A] tracking-tight mb-3 md:mb-4">
+            Diseñando para la excelencia
+          </h2>
+          <p class="text-gray-500 text-lg">
+            Savvi simplifica lo complejo para que tu dinero trabaje para ti bajo tu total direccion.
+          </p>
+        </div>
+
+        <!-- 2. Contenedor de las 4 tarjetas (El Grid) -->
+        <!-- 'grid-cols-1' = En celular, una tarjeta abajo de otra -->
+        <!-- 'md:grid-cols-3' = En pantallas grandes, se divide en 3 columnas invisibles -->
+        <!-- 'gap-6' = El espacio de separacion entre cada tarjeta -->
+        <!--
+          Grid responsivo:
+          - en móvil usa 1 columna
+          - en pantallas md+ usa 3 columnas (algunas tarjetas ocupan 2 columnas)
+        -->
+        <div class="max-w-7xl w-full grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
+          <!-- TARJETA 1 (Registro manual) -->
+          <div
+            class="animate-on-scroll delay-150 bg-white p-8 rounded-[2rem] border border-gray-100 shadow-sm flex flex-col justify-between md:col-span-2">
+            <div>
+              <!-- Icono -->
+              <div class="w-16 h-16 bg-[#FFD4CC] rounded-xl flex items-center justify-center mb-6">
+                <img
+                  src="/assets/icon_registroManual.svg"
+                  class="w-8 h-8"
+                  alt="Icono Registro Manual" />
+              </div>
+              <!-- Contenido -->
+              <h3 class="text-2xl font-bold text-gray-900 mb-3">Registro Manual Consciente</h3>
+              <p class="text-gray-600 mb-6 max-w-xl">
+                Toma el control y manual de tu flujo. Eres el arquitecto de tu riqueza; sin
+                sincronizaciones automáticas, cada registro es un acto de intencion financiera real.
+              </p>
+            </div>
+            <!-- Simulacion de la mini lista interar -->
+            <div class="bg-gray-50 p-4 rounded-2xl space-y-3">
+              <div class="flex items-center justify-between text-sm">
+                <div class="flex items-center gap-3">
+                  <div class="w-16 h-16 bg-[#00A36D] rounded-full flex items-center justify-center">
+                    <span class="text-center text-white font-bold text-xl">S</span>
+                  </div>
+                  <div>
+                    <div class="font-semibold text-lg">Starbucks Coffe</div>
+                    <div class="text-gray-500 text-sm">Hoy, 10:45 AM</div>
+                  </div>
+                </div>
+
+                <span class="text-red-500 font-semibold text-xl">-$4.50</span>
+              </div>
+              <div class="flex items-center justify-between text-sm">
+                <div class="flex items-center gap-3">
+                  <div class="w-16 h-16 bg-black rounded-full flex items-center justify-center">
+                    <span class="text-center text-white font-bold text-xl">U</span>
+                  </div>
+
+                  <div>
+                    <div class="font-semibold text-lg">Uber Trip</div>
+                    <div class="text-gray-500 text-sm">Hoy, 08:30 AM</div>
+                  </div>
+                </div>
+
+                <span class="text-red-500 font-semibold text-xl">-$12.20</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- TARJETA 2 Estadistica -->
+          <div
+            class="animate-on-scroll delay-200 bg-[#E5E5E5] p-8 rounded-[2rem] flex flex-col justify-between md:col-span-1">
+            <div>
+              <!-- <div class="w-12 h-12 bg-white/50 rounded-xl flex items-center justify-center mb-6">
+                <span class="text-[#FF5A36]">📊</span>
+              </div> -->
+              <div class="w-16 h-16 bg-[#FFD4CC] rounded-xl flex items-center justify-center mb-6">
+                <img
+                  src="/assets/Icon_estadistica.svg"
+                  class="w-8 h-8"
+                  alt="Icono Registro Manual" />
+              </div>
+              <h3 class="text-2xl font-bold text-gray-900 mb-3">Estadistica inteligentes</h3>
+              <p class="text-gray-600">
+                Visualizaciones potentes para tus reportes diarios, semanales y anuales con Savvi
+                Insights de alta definicion.
+              </p>
+            </div>
+            <!-- Graficos simulado abajo -->
+            <!-- <div class="h-24 bg-white/40 rounded-xl mt-6 flex items-end justify-center p-2 gap-2">
+              <img src="/assets/Landing - Grafica.png" alt="">
+            </div> -->
+            <img src="/assets/Landing - Grafica.png" alt="" />
+          </div>
+
+          <!-- Tarjeta 3 Metas de Ahorro -->
+          <div
+            class="animate-on-scroll delay-250 bg-[#E5E5E5] p-8 rounded-[2rem] flex flex-col justify-between md:col-span-1">
+            <div>
+              <div class="w-16 h-16 bg-[#FFD4CC] rounded-xl flex items-center justify-center mb-6">
+                <img src="/assets/Icon_metas.svg" class="w-8 h-8" alt="Icono Registro Manual" />
+              </div>
+              <h3 class="text-2xl font-bold text-gray-900 mb-3">Metas de Ahorro</h3>
+              <p class="text-gray-600">
+                Gestiona tus objetivos con seguimiento visual en tiempo real. Haz que tus sueños
+                tengan un plan ejecutable con Savvi.
+              </p>
+            </div>
+            <!-- Barra de progreso simulada abajo -->
+            <div class="mt-6">
+              <div class="flex justify-between text-xs font-bold mb-1 mt-4">
+                <span>VIAJE A JAPÓN</span>
+                <span class="text-[#FF5A36]">65%</span>
+              </div>
+              <div class="w-full bg-white/50 h-2 rounded-full">
+                <div class="bg-[#FF5A36] h-2 rounded-full w-[65%]"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Tarjeta 4 Reportes profesionales -->
+          <div
+            class="animate-on-scroll delay-300 bg-white p-8 rounded-[2rem] border border-gray-100 shadow-sm flex flex-col md:flex-row justify-between items-center md:col-span-2 gap-6">
+            <div class="flex-1">
+              <div class="w-16 h-16 bg-[#FFD4CC] rounded-xl flex items-center justify-center mb-6">
+                <img src="/assets/Icon_reporte.svg" class="w-8 h-8" alt="Icono Registro Manual" />
+              </div>
+              <h3 class="text-2xl font-bold text-gray-900 mb-3">Reportes Profesionales</h3>
+              <p class="text-gray-500">
+                Exporta tus datos en formatos PDF o Excel con un solo toque. Diseñados para una
+                claridad absoluta y minimalista.
+              </p>
+            </div>
+            <!-- Boton de descarga grande narajna a la drecha -->
+            <div
+              class="w-24 h-24 bg-[#FF5A36] rounded-3xl flex items-center justify-center rotate-6">
+              <img src="/assets/Icon_descarga.svg" alt="" />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!--
+        Timeline / Roadmap
+        Muestra milestones en una línea vertical (visible en md+).
+      -->
+      <!-- Timeline: Evolución de Savvi -->
+      <section id="Roadmap" class="py-16 md:py-32 px-4 md:px-8 max-w-7xl mx-auto">
+        <div class="mb-12 md:mb-20 text-center space-y-3 md:space-y-4">
+          <h2
+            class="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-headline font-bold tracking-tighter text-[#1b1c1c]">
+            Evolución de Savvi
+          </h2>
+          <p class="text-xs md:text-base text-[#5c403a] font-body max-w-2xl mx-auto">
+            Nuestra hoja de ruta hacia la excelencia financiera personal.
+          </p>
+        </div>
+
+        <div class="relative max-w-4xl mx-auto">
+          <!-- Vertical Timeline Line -->
+          <div
+            class="absolute left-1/2 transform -translate-x-1/2 h-full w-0.5 bg-[#e6bdb5]/30 hidden md:block"></div>
+
+          <!-- Milestones -->
+          <div class="space-y-12 md:space-y-24">
+            <!-- Milestone 1 -->
+            <div class="relative flex flex-col md:flex-row items-center justify-between group">
+              <div class="md:w-5/12 text-center md:text-right mb-6 md:mb-0 order-2 md:order-1">
+                <div
+                  class="inline-block px-4 py-1 rounded-full bg-[#FF4929]/10 text-[#FF4929] text-xs font-bold uppercase tracking-widest mb-4 font-label">
+                  v1.0 (En desarrollo)
+                </div>
+                <h3 class="text-2xl font-headline font-bold mb-2">Fundamentos de Control</h3>
+                <p class="text-[#5c403a] font-body leading-relaxed">
+                  Registro Manual Consciente y Estadísticas Inteligentes para una visibilidad
+                  absoluta.
+                </p>
+              </div>
+
+              <div
+                class="relative flex items-center justify-center w-12 h-12 rounded-full bg-[#ffffff] border-4 border-[#FF4929] z-10 order-1 md:order-2 shadow-lg shadow-[#FF4929]/20">
+                <span class="w-3 h-3 rounded-full bg-[#FF4929]"></span>
+              </div>
+
+              <div class="md:w-5/12 hidden md:block order-3"></div>
+            </div>
+
+            <!-- Milestone 2 -->
+            <div class="relative flex flex-col md:flex-row items-center justify-between group">
+              <div class="md:w-5/12 hidden md:block order-1"></div>
+
+              <div
+                class="relative flex items-center justify-center w-12 h-12 rounded-full bg-[#ffffff] border-4 border-[#FF4929] z-10 order-1 md:order-2 shadow-lg shadow-[#FF4929]/20">
+                <span class="w-3 h-3 rounded-full bg-[#FF4929] animate-pulse"></span>
+              </div>
+
+              <div class="md:w-5/12 text-center md:text-left mt-8 md:mt-0 order-2 md:order-3">
+                <div
+                  class="inline-block px-4 py-1 rounded-full bg-[#FF4929]/10 text-[#FF4929] text-xs font-bold uppercase tracking-widest mb-4 font-label">
+                  v1.1 (Próximo)
+                </div>
+                <h3 class="text-2xl font-headline font-bold mb-2">Expansión y Reportes</h3>
+                <p class="text-[#5c403a] font-body leading-relaxed">
+                  Temporizador de Lanzamiento y Reportes Profesionales exportables en alta
+                  resolución.
+                </p>
+              </div>
+            </div>
+
+            <!-- Milestone 3 -->
+            <div class="relative flex flex-col md:flex-row items-center justify-between group">
+              <div class="md:w-5/12 text-center md:text-right mb-8 md:mb-0 order-2 md:order-1">
+                <div
+                  class="inline-block px-4 py-1 rounded-full bg-[#eae8e7] text-[#5c403a] text-xs font-bold uppercase tracking-widest mb-4 font-label">
+                  v2.0 (Futuro)
+                </div>
+                <h3 class="text-2xl font-headline font-bold mb-2">Ecosistema Conectado</h3>
+                <p class="text-[#5c403a] font-body leading-relaxed">
+                  Sincronización Avanzada y Multi-dispositivo para gestionar tu riqueza donde sea
+                  que estés.
+                </p>
+              </div>
+
+              <div
+                class="relative flex items-center justify-center w-12 h-12 rounded-full bg-[#f6f3f2] border-4 border-[#e6bdb5]/30 z-10 order-1 md:order-2">
+                <span class="w-3 h-3 rounded-full bg-[#e6bdb5]"></span>
+              </div>
+
+              <div class="md:w-5/12 hidden md:block order-3"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!--
+        Sección: Lista de espera (formulario)
+        - El formulario tiene `id="waitlist-form"` y campos con ids
+          `waitlist-email` y `waitlist-name` para que el JS los seleccione.
+        - Mensajes de error usan `waitlist-email-error` y
+          `waitlist-name-error`.
+        - `waitlist-success` muestra el texto de confirmación.
+        - El envío es manejado por `landing_custom.js` que valida antes
+          de delegar la inserción a `window.sendWaitlist`.
+      -->
+      <!-- Form -->
+      <section class="py-32 px-8 max-w-5xl mx-auto text-center" id="Waitlist">
+        <div
+          class="animate-on-scroll delay-350 bg-[#f0eded] p-12 md:p-20 rounded-3xl space-y-8 relative overflow-hidden border border-[#e6bdb5]/10 shadow-xl">
+          <!-- Glow decorativo -->
+          <div
+            class="absolute top-0 right-0 w-40 md:w-80 h-40 md:h-80 bg-[#FF4929]/10 rounded-full -translate-y-1/2 translate-x-1/2 blur-3xl"></div>
+
+          <span
+            class="text-sm md:text-base uppercase tracking-[0.3em] text-[#FF5A36] font-semibold">
+            Lista de espera
+          </span>
+          <!-- Título -->
+          <h2
+            class="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-extrabold tracking-tighter text-[#1b1c1c]">
+            ¿Listo para transformar tu futuro con Savvi?
+          </h2>
+
+          <!-- Texto descriptivo -->
+          <p class="text-sm md:text-lg text-[#5c403a] max-w-xl mx-auto">
+            Sé de los primeros en probar Savvi y ayuda a construir la app perfecta para controlar
+            tus gastos y empezar a ahorrar.
+          </p>
+
+          <!-- Formulario -->
+          <form
+            id="waitlist-form"
+            class="mt-6 md:mt-10 flex flex-col gap-3 md:gap-4 w-full max-w-lg mx-auto justify-center items-center"
+            novalidate>
+            <!-- Input correo -->
+            <input
+              id="waitlist-email"
+              name="email"
+              type="email"
+              placeholder="hola@ejemplo.com"
+              required
+              class="w-full px-4 md:px-8 py-3 md:py-4 rounded-full bg-[#ffffff] border border-[#e6bdb5]/20 text-sm md:text-base text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#FF4929]/20" />
+            <p id="waitlist-email-error" class="text-sm text-red-600 hidden text-left w-full"></p>
+
+            <!-- Input nombre -->
+            <input
+              id="waitlist-name"
+              name="name"
+              type="text"
+              placeholder="nombre"
+              required
+              minlength="2"
+              maxlength="50"
+              class="w-full px-4 md:px-8 py-3 md:py-4 rounded-full bg-[#ffffff] border border-[#e6bdb5]/20 text-sm md:text-base text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#FF4929]/20" />
+            <p id="waitlist-name-error" class="text-sm text-red-600 hidden text-left w-full"></p>
+
+            <!-- Botón -->
+            <button
+              type="submit"
+              class="px-6 md:px-10 py-3 md:py-4 rounded-full bg-[#FF4929] text-white text-sm md:text-base font-bold hover:scale-105 active:scale-95 transition-all shadow-lg shadow-[#FF4929]/25">
+              Unirme ahora
+            </button>
+            <!--
+              Elemento para mostrar un mensaje de éxito tras el envío.
+              `landing_custom.js` lo mostrará y rellenará con texto.
+            -->
+            <p id="waitlist-success" class="text-sm success-text hidden w-full text-left"></p>
+          </form>
+        </div>
+      </section>
+    </main>
+
+    <!--
+      Footer
+      - Distribución en 3 columnas en escritorio: logo, enlaces centrales,
+        y texto de copyright a la derecha.
+      - En móvil se apila: justify-items-center asegura que el bloque
+        central quede centrado.
+    -->
+    <footer class="bg-gray-200 py-5">
+      <div
+        class="container mx-auto px-0 grid gap-6 items-center text-center grid-cols-1 md:grid-cols-3 justify-items-center">
+        <!-- Logo / Marca -->
+        <div class="flex items-center justify-center md:justify-start gap-3 md:justify-self-start">
+          <img class="w-12 h-12" src="/assets/Logo_Savvi.svg" />
+          <span class="font-semibold text-2xl">Savvi</span>
+        </div>
+
+        <!-- Navegación mínima (Privacidad / Contacto) -->
+        <div class="flex flex-wrap justify-center gap-4 text-lg">
+          <button id="privacy-link" type="button" class="hover:text-gray-300 underline">
+            Privacidad
+          </button>
+          <button id="contact-link" type="button" class="hover:text-gray-300 underline">
+            Contacto
+          </button>
+        </div>
+
+        <!-- Línea inferior -->
+        <div class="text-gray-500 text-lg md:justify-self-end">
+          © 2026 Savvi. Built for wealth creators.
+        </div>
+      </div>
+    </footer>
+
+    <div
+      id="privacy-modal"
+      class="hidden fixed inset-0 z-50 items-center justify-center bg-black/40 p-4">
+      <div class="max-w-3xl w-full bg-white rounded-3xl p-8 shadow-xl overflow-y-auto max-h-[90vh]">
+        <div class="flex items-start justify-between gap-4 mb-6">
+          <div>
+            <h3 class="text-2xl font-bold text-[#1b1c1c]">Política de Privacidad</h3>
+            <p class="text-sm text-gray-500">Última actualización: junio 2026</p>
+          </div>
+          <button
+            id="privacy-close"
+            class="rounded-full bg-[#FF4929] px-4 py-2 text-white font-semibold hover:bg-[#e0361f] transition-colors">
+            Cerrar
+          </button>
+        </div>
+        <div class="space-y-4 text-gray-700">
+          <p>
+            En Savvi nos tomamos en serio tu privacidad. Esta página explica de forma clara qué
+            información recopilamos y cómo la usamos.
+          </p>
+          <div>
+            <h4 class="font-semibold">¿Qué información recopilamos?</h4>
+            <p>
+              Al unirte a la lista de espera, recopilamos únicamente tu nombre y correo electrónico.
+            </p>
+          </div>
+          <div>
+            <h4 class="font-semibold">¿Para qué usamos esta información?</h4>
+            <p>Usamos tus datos exclusivamente para:</p>
+            <ul class="list-disc list-inside space-y-1 text-gray-700">
+              <li>Avisarte cuando Savvi esté disponible</li>
+              <li>Compartir actualizaciones sobre el desarrollo de la app</li>
+              <li>Pedirte feedback como uno de nuestros primeros usuarios</li>
+            </ul>
+          </div>
+          <div>
+            <h4 class="font-semibold">¿Compartimos tu información?</h4>
+            <p>
+              No. Tu información nunca será vendida, compartida o cedida a terceros bajo ninguna
+              circunstancia.
+            </p>
+          </div>
+          <div>
+            <h4 class="font-semibold">¿Dónde se almacenan tus datos?</h4>
+            <p>
+              Tus datos se almacenan de forma segura en Supabase, una plataforma de base de datos en
+              la nube con altos estándares de seguridad.
+            </p>
+          </div>
+          <div>
+            <h4 class="font-semibold">¿Puedo eliminar mis datos?</h4>
+            <p>
+              Sí. Puedes solicitar la eliminación de tu información en cualquier momento
+              escribiéndonos a través de nuestras redes sociales.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div
+      id="contact-modal"
+      class="hidden fixed inset-0 z-50 items-center justify-center bg-black/40 p-4">
+      <div class="max-w-xl w-full bg-white rounded-3xl p-8 shadow-xl">
+        <div class="flex items-start justify-between gap-4 mb-6">
+          <div>
+            <h3 class="text-2xl font-bold text-[#1b1c1c]">Contacto</h3>
+            <p class="text-sm text-gray-500">Escríbenos o visita nuestro perfil.</p>
+          </div>
+          <button
+            id="contact-close"
+            class="rounded-full bg-[#FF4929] px-4 py-2 text-white font-semibold hover:bg-[#e0361f] transition-colors">
+            Cerrar
+          </button>
+        </div>
+        <div class="space-y-4 text-gray-700">
+          <div>
+            <p class="font-semibold">Email</p>
+            <a href="mailto:jestih@gmail.com" class="text-[#FF5A36] hover:underline">
+              jestih@gmail.com
+            </a>
+          </div>
+          <div>
+            <p class="font-semibold">LinkedIn</p>
+            <a
+              href="https://www.linkedin.com/in/jesith-mejia"
+              target="_blank"
+              rel="noreferrer"
+              class="text-[#FF5A36] hover:underline">
+              www.linkedin.com/in/jesith-mejia
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="./custom_send.js"></script>
+    <script src="./landing_custom.js"></script>
+  </body>
+</html>
